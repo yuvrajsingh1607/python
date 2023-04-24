@@ -8,5 +8,6 @@ git rev-parse HEAD
 # get the files changed in a commit id
 git diff-tree --no-commit-id --name-only 552544e9cde70269e37784aff2e62dd97420b862 -r
 # config git variables
-git config --global user.email "email id" .
+git config --global user.email "email id" 
+
 git config --global user.name "Yuvraj Singh"
