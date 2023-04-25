@@ -11,3 +11,5 @@ git diff-tree --no-commit-id --name-only 552544e9cde70269e37784aff2e62dd97420b86
 git config --global user.email "email id" 
 
 git config --global user.name "Yuvraj Singh"
+# exit the bash scrit if there is any error in command output
+set -ex
