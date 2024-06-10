@@ -1,0 +1,200 @@
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html : downloaded the binary 
+https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html : installed using mac commands
+https://awscli.amazonaws.com/AWSCLIV2.pkg : graphical installation
+https://aws.amazon.com/premiumsupport/knowledge-center/eks-cluster-connection/  configure the local profile and test through VPN
+adding an eks profile:
+aws eks --region us-west-2 update-kubeconfig --name Oregon-QA-EKS
+
+collection of commands: 
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+https://www.codegrepper.com/code-examples/shell/kubectl+list+contexts
+kubectl get all
+kubectl get all -n <namespace>
+kubectl describe pods/rs <name of the pod/rs>
+kubectl delete pod/rs <name of the pod/rs>
+kubectl get pods/rs <name of the pod/rs>
+kubectl get rs --watch
+eksctl get cluster
+kubectl get pods -o wide
+kubectl get nodes -n <name space>
+kubectl get pods -n <name space>
+kubectl describe ds kube-proxy -n kube-system
+kubectl describe deploy coredns -n kube-system
+kubectl config get-contexts
+kubectl config current-context
+kubectl config use-context <name>
+kubectl config get-users
+kubectl config get-clusters
+kubectl get pods --all-namespaces
+kubectl exec -it -n <namespace> <pod_name> -- sh
+kubectl logs -n <name space> <pod name>
+kubectl logs deploy/<deployment name>
+kubectl logs -f -n <name space> <pod name>
+kubectl logs -n <name space> <POD_NAME> --previous  [check the logs of a crashed pod]
+kubectl logs --tail=25 -n <name space> <POD_NAME>
+aws eks describe-cluster --name UK-QA-EKS --region eu-west-1
+aws eks describe-cluster --name QA-EKS02 --region us-east-1
+kubectl exec -it -n <ns-name> <pod-name> -- env |grep amazon.iam.
+aws eks --region eu-west-2 update-kubeconfig --name UK-PROD-EKS
+kubectl get pod -o=custom-columns=NODE:.spec.nodeName,NAME:.metadata.name --all-namespaces
+kubectl get pod -o=custom-columns=NAME:.metadata.name,STATUS:.status.phase,NODE:.spec.nodeName --all-namespaces
+kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath="{.data.admin-password}"|base64 --decode
+kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath="{.data.admin-user}"|base64 --decode
+kubectl get secrets -n external integration-tokens -o jsonpath="{.data.FIREBASE_ENCRYPTION_SALT}"    # if  value is not decoded and want to display value of the key from secret yaml
+kubectl describe secret --namespace monitoring monitoring-grafana
+kubectl rollout status deploy edge-proxy-deployment -n external
+kubectl logs --previous --tail 10 -n <name space> <pod name>
+kubectl get deployment
+kubectl rollout restart deployment <deployment_name>
+kubectl describe pods --all-namespaces |grep Image|grep qmd-web|grep 20[1-2][0-9]
+kubectl get pods -n kube-system   # how many plugins/addons we have in a cluster(see the network plugin details while describing aws-node)
+eksctl get addon --cluster QA-EKS02  ## if addons are managed by EKS
+eksctl get nodegroup --cluster=Oregon-QA-EKS --region=us-west-2
+kubectl get pod -n default |grep Evicted| awk '{print $1}'| xargs kubectl delete pod -n default    ### delete pods which are in Evicted state
+eksctl delete nodegroup --cluster=Oregon-QA-EKS --region=us-west-2 --name=ng-028e1cf8
+kubectl get clusterrole
+kubectl describe clusterrole admin
+kubectl get sa -A
+kubectl api-resources -o wide | grep ingresses
+kubectl get serviceaccounts -A
+kubectl get ing
+kubectl describe role nginx-ingress-public-role -n ingress-nginx-public
+kubectl describe cronjob clear-es-index
+kubectl get event --namespace <ns> --field-selector involvedObject.name=<pod>
+kubectl get event -n external --field-selector involvedObject.name=oauth2-deployment-69785764dc-kdtph
+kubectl get events --field-selector type!=Normal -A
+kubectl scale --replicas=1 deployment oauth2-deployment -n external
+kubectl get endpoints --namespace external
+ kubectl scale --replicas=2 deployment  -n ingress-nginx-public   nginx-ingress-controller-public
+kubectl get deployments -A|grep nginx
+kubectl edit deployment -n ingress-nginx-public   nginx-ingress-controller-public
+
+
+
+unset a context/user/cluster from your local laptop:
+kubectl config unset users.arn:aws:eks:us-west-2:041027301676:cluster/Oregon-QA-EKS
+kubectl config unset contexts.arn:aws:eks:us-west-2:041027301676:cluster/Oregon-QA-EKS
+kubectl config unset clusters.arn:aws:eks:us-west-2:041027301676:cluster/Oregon-QA-EKS
+kubectl config get-clusters
+kubectl config get-users
+kubectl config get-contexts
+
+
+
+If the pod is part of a deployment, the suggested way to terminate pods while keeping high availability is to perform a roll out with the following command. 
+kubectl rollout restart -n default deployment/jsreport-deployment 
+kubectl rollout restart -n ingress-nginx-public deployment/nginx-ingress-controller-public
+kubectl rollout restart -n ingress-nginx deployment/nginx-ingress-controller
+
+
+
+```
+kubectl delete replicaset.apps/qmd-report-service-deployment-6d549fd5c6
+```
+
+Before doing any activity take backup of the system using below commands:
+```
+kubectl get svc -A
+kubectl get ing -A
+kubectl get endpoints -A
+kubectl get deployments -A
+kubectl get pods -A
+kubectl get all -A
+kubectl get ClusterRoleBinding -A
+kubectl get roleBinding -A
+kubectl get role -A
+kubectl get clusterrole -A
+kubectl get sa -A
+kubectl api-resources -o wide
+kubectl get cronjob -A
+kubectl get configmap -A
+kubectl get daemonset -A
+kubectl get Alertmanager -A
+kubectl get CustomResourceDefinition -A
+kubectl get IngressClass -A
+kubectl get Job -A
+kubectl get MutatingWebhookConfiguration -A
+kubectl get Namespace -A
+kubectl get PersistentVolume -A
+kubectl get PersistentVolumeClaim -A
+kubectl get PodSecurityPolicy -A
+kubectl get Prometheus -A
+kubectl get PrometheusRule -A
+kubectl get Secret -A
+kubectl get ServiceAccount -A
+kubectl get ServiceMonitor -A
+kubectl get StatefulSet -A
+kubectl get StorageClass -A
+kubectl get ValidatingWebhookConfiguration -A
+
+
+kubectl describe svc -A
+kubectl describe ing -A
+kubectl describe endpoints -A
+kubectl describe deployments -A
+kubectl describe pods -A
+kubectl describe all -A
+kubectl describe ClusterRoleBinding -A
+kubectl describe roleBinding -A
+kubectl describe role -A
+kubectl describe clusterrole -A
+kubectl describe sa -A
+kubectl api-resources -o wide
+kubectl describe cronjob -A
+kubectl describe configmap -A
+kubectl describe daemonset -A
+kubectl describe Alertmanager -A
+kubectl describe CustomResourceDefinition -A
+kubectl describe IngressClass -A
+kubectl describe Job -A
+kubectl describe MutatingWebhookConfiguration -A
+kubectl describe Namespace -A
+kubectl describe PersistentVolume -A
+kubectl describe PersistentVolumeClaim -A
+kubectl describe PodSecurityPolicy -A
+kubectl describe Prometheus -A
+kubectl describe PrometheusRule -A
+kubectl describe Secret -A
+kubectl describe ServiceAccount -A
+kubectl describe ServiceMonitor -A
+kubectl describe StatefulSet -A
+kubectl describe StorageClass -A
+kubectl describe ValidatingWebhookConfiguration -A
+
+
+take backup of nginx.conf file from all the environments.
+take backup of all DNS records from the ingress manifest files
+access all the endpoints and take snapshot of the endpoints access results
+take configuration backup of CloudFormation, ASG, Launch Config, LB and EC2
+```
+
+
+result="before_upgrade.txt"
+cluster=$(kubectl config current-context|cut -d'/' -f2)
+DATE=$(date +%d-%m-%Y-%H-%M-%S)
+for i in `cat command.txt`
+do
+$(kubectl get $i -A -o=yaml > ${i}_yaml_${cluster}_${DATE}_$result)
+$(kubectl get $i -A > ${i}_get_${cluster}_${DATE}_$result)
+$(kubectl describe $i -A > ${i}_describe_${cluster}_${DATE}_$result)
+done
+
+here is the contents of the commands.txt file:
+svc
+ing
+endpoints
+
+ $ cat take-backup.sh 
+suffix=".txt"
+cluster=$(kubectl config current-context|cut -d'/' -f2)
+DATE=$(date +%d-%m-%Y)
+mkdir -p ./before_upgrade/${cluster}/${DATE}
+cd ./before_upgrade/${cluster}/${DATE}/
+echo "Taking configuration backup of the ${cluster} cluster into ./before_upgrade/${cluster}/${DATE} folder"
+for i in `cat ../../../commands.txt`
+do
+$(kubectl get $i -A -o=yaml > ${i}_yaml$suffix)
+$(kubectl get $i -A > ${i}_get$suffix)
+$(kubectl describe $i -A > ${i}_describe$suffix)
+done
+echo "configuration backup is completed"
